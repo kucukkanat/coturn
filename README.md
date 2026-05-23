@@ -24,6 +24,18 @@ Or run coturn using docker container:
 ```
 docker run -d -p 3478:3478 -p 3478:3478/udp -p 5349:5349 -p 5349:5349/udp -p 49152-65535:49152-65535/udp coturn/coturn
 ```
+
+If you do not need TLS/DTLS TURN, you can expose only `3478/tcp` and `3478/udp`. Port `5349` is only needed for secure TURN/STUN over TLS/DTLS (for example, `turns:` clients). Regardless of whether you expose `5349`, TURN relaying still requires opening the UDP relay port range such as `49152-65535/udp` unless you reconfigure `min-port` and `max-port`.
+
+Minimal plain setup:
+```bash
+docker run -d \
+  -p 3478:3478 \
+  -p 3478:3478/udp \
+  -p 49152-65535:49152-65535/udp \
+  coturn/coturn
+```
+
 See more details about using docker container [Docker Readme](https://github.com/coturn/coturn/blob/master/docker/coturn/README.md)
 
 
@@ -127,7 +139,9 @@ TURN authentication mechanisms:
 
 Performance and Load Balancing:
 
-When used as a part of an ICE solution, for VoIP connectivity, this TURN server can handle thousands simultaneous calls per CPU (when TURN protocol is used) or tens of thousands calls when only STUN protocol is used. For virtually unlimited scalability a load balancing scheme can be used. The load balancing can be implemented with the following tools (either one or a combination of them):
+When used as a part of an ICE solution, for VoIP connectivity, this TURN server can handle thousands simultaneous calls per CPU (when TURN protocol is used) or tens of thousands calls when only STUN protocol is used. 
+
+Load balancing support:
 
   * DNS SRV based load balancing;
   * built-in 300 ALTERNATE-SERVER mechanism (requires 300 response support by the TURN client);
@@ -146,7 +160,7 @@ Target platforms:
 
 This project can be successfully used on other `*NIX` platforms, too, but that is not officially supported.
 
-The implementation is supposed to be simple, easy to install and configure. The project focuses on performance, scalability and simplicity. The aim is to provide an enterprise-grade TURN solution.
+The implementation is supposed to be simple, easy to install and configure. The project focuses on performance, scalability and simplicity. The aim is to provide an enterprise-grade TURN solution for VoIP applications. 
 
 To achieve high performance and scalability, the TURN server is implemented with the following features:
 
@@ -154,7 +168,7 @@ To achieve high performance and scalability, the TURN server is implemented with
   * High-performance industrial-strength Network IO engine libevent2 in other cases
   * Multiple listening and relay addresses can be configured
   * Efficient per-thread memory allocation model is used
-  * The TURN project code can be used in a custom proprietary networking environment. In the TURN server code, an abstract networking API is used. Only couple files in the project have to be re-written to plug-in the TURN server into a proprietary environment. With this project, only implementation for standard UNIX Networking/IO API is provided, but the  user can implement any other environment. The TURN server code was originally developed for a high-performance proprietary corporate environment, then adopted for UNIX Networking API
+  * The TURN project code can be used in a custom proprietary networking environment. In the TURN server code, an abstract networking API is used. Only couple files in the project have to be rewritten to embed the TURN server code in a proprietary environment.
   * The TURN server works as a user space process, without imposing any special requirements on the system
 
 
