@@ -27,6 +27,17 @@ docker run -d -p 3478:3478 -p 3478:3478/udp -p 5349:5349 -p 5349:5349/udp -p 491
 
 If you do not need TLS/DTLS TURN, you can expose only `3478/tcp` and `3478/udp`. Port `5349` is only needed for secure TURN/STUN over TLS/DTLS (for example, `turns:` clients). Regardless of whether you expose `5349`, TURN relaying still requires opening the UDP relay port range such as `49152-65535/udp` unless you reconfigure `min-port` and `max-port`.
 
+`min-port` and `max-port` define the UDP relay port range that Coturn uses for relayed media traffic. You can omit them and let Coturn use its default range, but setting them is useful when you want a smaller, controlled range that is easier to expose through Docker and firewalls.
+
+Example with a custom relay range:
+```bash
+docker run -d \
+  -p 3478:3478 \
+  -p 3478:3478/udp \
+  -p 49160-49200:49160-49200/udp \
+  coturn/coturn --min-port=49160 --max-port=49200
+```
+
 Minimal plain setup:
 ```bash
 docker run -d \
