@@ -40,11 +40,11 @@ docker run -d \
 
 Minimal plain setup:
 ```bash
-docker run -d \
-  -p 3478:3478 \
-  -p 3478:3478/udp \
-  -p 49152-65535:49152-65535/udp \
-  coturn/coturn
+docker run -itd \
+  --network=host \
+  coturn/coturn \
+  --realm=<EXTERNAL_IP> \ 
+  -u user:user
 ```
 
 See more details about using docker container [Docker Readme](https://github.com/coturn/coturn/blob/master/docker/coturn/README.md)
